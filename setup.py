@@ -6,15 +6,15 @@ setup(
     version="1.0",
     url="https://github.com/woterr/dotpush",
     classifiers=[
-        'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     entry_points={
-        'console_scripts': [
-            'dotpush = dotpush.cli:main',
+        "console_scripts": [
+            "dotpush = dotpush.cli:main",
         ],
     },
-    packages=find_packages()
+    packages=find_packages(),
 )

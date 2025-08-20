@@ -1,13 +1,14 @@
 import configparser
 import os
 
-def _get_config(username=os.environ.get("USER")):
+
+def _get_config(username: str = os.environ.get("USER")) -> configparser.ConfigParser:
     """
     This helper fetches the system configuration/s set for DotPush.
 
     Args:
         username (str): The system username.
-    
+
     Returns:
         config (ConfigParser): An object containing system configuration/s.
     """
@@ -16,6 +17,8 @@ def _get_config(username=os.environ.get("USER")):
     files_read = config.read(f"/home/{username}/.config/dotpush/config.ini")
 
     if not files_read:
-        raise FileNotFoundError("config.ini was not found. Create one in ~/.config/dotpush/ or run dotpush init")
+        raise FileNotFoundError(
+            "config.ini was not found. Create one in ~/.config/dotpush/ or run dotpush init"
+        )
 
     return config
