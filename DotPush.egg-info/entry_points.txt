@@ -1,2 +1,0 @@
-[console_scripts]
-dotpush = dotpush.cli:main
