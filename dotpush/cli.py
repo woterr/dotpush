@@ -3,6 +3,9 @@ from . import main as m
 
 
 def main():
+    """
+    This function handles argument parsing logic.
+    """
     parser = argparse.ArgumentParser(
         description="A tool that helps backup dotfiles and automatically push to a remote github repository."
     )
