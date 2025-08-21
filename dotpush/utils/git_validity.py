@@ -23,6 +23,5 @@ def _is_valid(token: str) -> bool:
         return response.status_code == 200
 
     except requests.exceptions.RequestException as e:
-        # Handle network errors, etc.
         print(f"An error occurred while validating the token: {e}")
         return False

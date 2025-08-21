@@ -10,7 +10,7 @@ def _init(username: str = os.environ.get("USER")) -> None:
     Args:
         username (str): The system username.
     """
-    config_path = f"/home/{username}/.config/dotpush/config.ini"
+    config_path = os.path.expanduser(constants.CONFIG_PATH)
     if os.path.exists(config_path):
         print("DotPush is already initialized.")
     else:
