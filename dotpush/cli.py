@@ -13,13 +13,22 @@ def main():
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
     subparsers.required = True
 
-    subparsers.add_parser("init", help="Initialize DotPush")
+    parser_init = subparsers.add_parser("init", help="Initialize DotPush")
+    parser_init.add_argument(
+        "service",
+        nargs="?",
+        choices=["github"],
+        default=None,
+        help="Optional: Specify 'github' to initialize with GitHub integration.",
+    )
     subparsers.add_parser("backup", help="Backup dotfiles to local directory")
-    # parser_init.add_argument(...)
+    subparsers.add_parser("push", help="Push DotFiles to a github repository")
 
     args = parser.parse_args()
 
     if args.command == "init":
-        m.init()
+        m.init(service=args.service)
     if args.command == "backup":
         m.backup()
+    if args.command == "push":
+        m.push()

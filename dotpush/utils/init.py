@@ -16,12 +16,6 @@ def _init(username: str = os.environ.get("USER")) -> None:
     else:
         default_config = configparser.ConfigParser()
 
-        default_config["GitHub"] = {
-            "username": username,
-            "repository_url": f"https://github.com/{username}/dotfiles",
-            "auto_push": True,
-        }
-
         default_config["Settings"] = {
             "backup_directory": constants.BACKUP_DIRECTORY,
             "compression": False,
