@@ -3,8 +3,8 @@ from . import constants
 from .utils.config import _get_config
 from .utils.init import _init
 from .utils.backup import _backup
-from .utils.git_check import _check
 from .utils.git_init import _git_init
+from .utils.git_push import _push
 
 
 def init(service: str = None):
@@ -31,13 +31,4 @@ def backup():
 
 def push():
     """Autopush logic for the backup directory."""
-    config = _get_config()
-    full_backup_path = os.path.expanduser(config["Settings"]["backup_directory"])
-
-    if os.path.exists(full_backup_path):
-        if _check(full_backup_path):
-            print("    -> Found existing Git repository")
-            # to do
-        else:
-            print("    -> Git repository not found. Initialising...")
-            # to do
+    _push()

@@ -3,3 +3,4 @@ DotPush.egg-info/
 dotpush/utils/__pycache__/
 dotpush/__pycache__/
 .ruff_cache/
+tests/__pycache__

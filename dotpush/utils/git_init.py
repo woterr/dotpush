@@ -71,7 +71,7 @@ def _create_remote_repository(
 
 def _git_init() -> bool:
     """
-    This helper initializes the GitHub repository for DotPush backup directory.
+    This helper creates the GitHub repository for DotPush backup directory.
 
     Args:
         git_username (str): GitHub account username.
@@ -106,8 +106,11 @@ def _git_init() -> bool:
 
     config_path = os.path.expanduser(constants.CONFIG_PATH)
 
+    if not config.has_section("GitHub"):
+        config.add_section("GitHub")
     config.set("GitHub", "enabled", "True")
     config.set("GitHub", "username", git_username)
+    config.set("GitHub", "repo_name", git_repo)
     config.set(
         "GitHub", "repository_url", f"https://github.com/{git_username}/{git_repo}"
     )
