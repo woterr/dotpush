@@ -9,7 +9,7 @@ url="https://github.com/woterr/dotpush"
 license=('MIT')
 depends=('python' 'python-keyring' 'python-requests' 'python-installer')
 makedepends=('python-build' 'python-wheel' 'python-setuptools')
-source=(source=("$pkgname-$pkgver.tar.gz::https://github.com/woterr/dotpush/archive/refs/tags/v$pkgver.tar.gz"))
+source=("$pkgname-$pkgver.tar.gz::https://github.com/woterr/dotpush/releases/download/v$pkgver/dotpush-$pkgver.tar.gz")
 sha256sums=('0d532d61d75954f222258b0a6abc474e309458c8ccba62557a217a606af25316')
 install='dotpush.install'
 
