@@ -10,7 +10,7 @@ license=('MIT')
 depends=('python' 'python-keyring' 'python-requests' 'python-installer')
 makedepends=('python-build' 'python-wheel' 'python-setuptools')
 source=(source=("$pkgname-$pkgver.tar.gz::https://github.com/woterr/dotpush/archive/refs/tags/v$pkgver.tar.gz"))
-sha256sums=('12c4efc5ec41d9c2c1c81584363696cb52c2ed02913c435de0b37e2b652f046d')
+sha256sums=('0d532d61d75954f222258b0a6abc474e309458c8ccba62557a217a606af25316')
 install='dotpush.install'
 
 build() {
