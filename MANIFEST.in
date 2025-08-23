@@ -1,0 +1,5 @@
+recursive-include dotpush *.py
+recursive-include dotpush/utils *.py
+recursive-include systemd *
+include README.md
+include LICENSE

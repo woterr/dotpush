@@ -1,0 +1,10 @@
+[Unit]
+Description=Run dotpush hourly to back up and push dotfiles
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=1h
+Unit=dotpush.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,11 @@
+post_install() {
+    echo "Reloading systemd daemon and enabling dotpush.timer..."
+    systemctl --user daemon-reload
+    systemctl --user enable --now dotpush.timer
+}
+
+pre_remove() {
+    echo "Stopping and disabling dotpush.timer..."
+    systemctl --user stop dotpush.timer
+    systemctl --user disable dotpush.timer
+}

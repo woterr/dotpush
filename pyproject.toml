@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dotpush"
+version = "1.0.0"
+description = "A tool to backup dotfiles and push to GitHub."
+readme = "README.md"
+requires-python = ">=3.6"
+license = {text = "MIT"}
+dependencies = ["keyring", "requests"]
+
+[project.scripts]
+dotpush = "dotpush.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dotpush", "dotpush.*"]

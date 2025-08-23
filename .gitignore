@@ -1,4 +1,4 @@
-DotPush.egg-info/
+*.egg-info/
 .venv/
 dotpush/utils/__pycache__/
 dotpush/__pycache__/
@@ -6,3 +6,9 @@ dotpush/__pycache__/
 tests/__pycache__
 .vscode/
 .pytest_cache/
+src/
+dist/
+pkg/
+build/
+*.pkg.tar.zst
+*.tar.gz

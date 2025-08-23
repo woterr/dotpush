@@ -42,9 +42,7 @@ def _backup(backup_path: str, paths: list) -> None:
 
                 shutil.copy2(full_source_path, destination_path, follow_symlinks=False)
 
-            # Directories should be seperated from files
             if os.path.isdir(full_source_path):
-                # Replace directory if it already exists
                 if os.path.exists(destination_path):
                     shutil.rmtree(destination_path)
                 shutil.copytree(full_source_path, destination_path)

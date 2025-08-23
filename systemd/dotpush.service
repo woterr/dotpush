@@ -1,0 +1,7 @@
+[Unit]
+Description=Backup and push dotfiles using DotPush
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/dotpush backup
+ExecStart=/usr/bin/dotpush push

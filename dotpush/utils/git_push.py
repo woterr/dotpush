@@ -150,6 +150,6 @@ def _push() -> None:
     if not _check(backup_dir):
         _initialize_git_repo(username, repo_name, token, backup_dir)
     else:
-        _subsequent_push(username, repo_name, token, backup_dir)
+        _subsequent_push(backup_dir)
 
     return None
