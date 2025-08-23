@@ -36,6 +36,12 @@ def _backup(backup_path: str, paths: list) -> None:
         if os.path.exists(full_source_path):
             print(f"    -> Backing up {source_path}...")
 
+            if os.path.islink(full_source_path):
+                if os.path.lexists(destination_path):
+                    os.remove(destination_path)
+
+                shutil.copy2(full_source_path, destination_path, follow_symlinks=False)
+
             # Directories should be seperated from files
             if os.path.isdir(full_source_path):
                 # Replace directory if it already exists
