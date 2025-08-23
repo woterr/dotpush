@@ -1,4 +1,4 @@
-# Maintainer: Woter <your.email@example.com>
+# Maintainer: Woter <im.woterr@gmail.com>
 
 pkgname=dotpush
 pkgver=1.0.0
@@ -9,7 +9,7 @@ url="https://github.com/woterr/dotpush"
 license=('MIT')
 depends=('python' 'python-keyring' 'python-requests' 'python-installer')
 makedepends=('python-build' 'python-wheel' 'python-setuptools')
-source=("$pkgname-$pkgver.tar.gz")
+source=(source=("$pkgname-$pkgver.tar.gz::https://github.com/woterr/dotpush/archive/refs/tags/v$pkgver.tar.gz"))
 sha256sums=('12c4efc5ec41d9c2c1c81584363696cb52c2ed02913c435de0b37e2b652f046d')
 install='dotpush.install'
 

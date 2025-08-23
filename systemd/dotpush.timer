@@ -3,7 +3,7 @@ Description=Run dotpush hourly to back up and push dotfiles
 
 [Timer]
 OnBootSec=15min
-OnUnitActiveSec=1min
+OnUnitActiveSec=1hr
 Unit=dotpush.service
 
 [Install]

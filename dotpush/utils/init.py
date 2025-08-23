@@ -24,7 +24,7 @@ def _init(username: str = os.environ.get("USER")) -> None:
             "compression": False,
         }
 
-        default_config["Schedule"] = {"enabled": False, "frequency": "daily"}
+        # default_config["Schedule"] = {"enabled": False, "frequency": "hourly"}
 
         default_config["Files"] = {
             "paths": "~/.bashrc ~/.bash_profile ~/.profile ~/.aliases ~/.config/Code/User/ ~/.gitconfig ~/.config/fish/ ~/.local/share/fonts/ ~/.config/gtk-3.0/"
