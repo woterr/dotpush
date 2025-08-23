@@ -1,9 +1,12 @@
 import keyring
 import subprocess
 import os
+import shutil
 from datetime import datetime
 from .git_check import _check
 from .config import _get_config
+
+GIT_EXECUTABLE = shutil.which("git")
 
 
 def _initialize_git_repo(
@@ -89,6 +92,9 @@ def _subsequent_push(directory: str) -> bool:
     Returns:
         bool: True if everything was successfull.
     """
+    if not GIT_EXECUTABLE:
+        print("Error: 'git' command not found on the system.")
+        return
 
     try:
         status_result = subprocess.run(

@@ -3,5 +3,6 @@ Description=Backup and push dotfiles using DotPush
 
 [Service]
 Type=oneshot
+Environment="PATH=/usr/bin:/usr/local/bin"
 ExecStart=/usr/bin/dotpush backup
 ExecStart=/usr/bin/dotpush push

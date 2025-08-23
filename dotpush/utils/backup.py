@@ -10,9 +10,28 @@ def _backup(backup_path: str, paths: list) -> None:
         backup_path (str): The path where the files are to be copied.
         paths (list): The list of paths to be copied.
     """
+    # Remove orphaned files
+    expected_items = {
+        os.path.basename(os.path.expanduser(p).rstrip(os.sep)) for p in paths
+    }
+    full_backup_path = os.path.expanduser(backup_path)
+
+    print("Removing orphaned items...")
+    if os.path.exists(full_backup_path):
+        actual_items = os.listdir(full_backup_path)
+        for i in actual_items:
+            if (i not in expected_items) and (
+                i not in [".git", ".gitignore", ".github"]
+            ):
+                print(f"    -> Removing orphaned item: {i}")
+                item_path = os.path.join(full_backup_path, i)
+                if os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+                else:
+                    os.remove(item_path)
+
     print("Starting backup...")
     # Expand backup path
-    full_backup_path = os.path.expanduser(backup_path)
 
     for source_path in paths:
         # Expand source path (files to be copied)
