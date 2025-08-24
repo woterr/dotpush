@@ -42,14 +42,35 @@ def main():
         default=None,
         help="Optional: Specify 'github' to initialize with GitHub integration.",
     )
+    parser_init.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="Force re-initialization, overwriting the existing config file.",
+    )
     subparsers.add_parser("backup", help="Backup dotfiles to local directory")
     subparsers.add_parser("push", help="Push DotFiles to a github repository")
+    parser_add = subparsers.add_parser("add", help="Add a path to the tracking list")
+    parser_add.add_argument("paths", nargs="+", help="The path(s) to append/be tracked")
+    parser_remove = subparsers.add_parser(
+        "remove", help="Remove a path from the tracking list"
+    )
+    parser_remove.add_argument(
+        "paths", nargs="+", help="The path(s) to removed from tracking"
+    )
+    subparsers.add_parser("list", help="List all files being tracked")
 
     args = parser.parse_args()
 
     if args.command == "init":
-        m.init(service=args.service)
+        m.init(service=args.service, force=args.force)
     if args.command == "backup":
         m.backup()
     if args.command == "push":
         m.push()
+    if args.command == "add":
+        m.add(paths=args.paths)
+    if args.command == "remove":
+        m.remove(paths=args.paths)
+    if args.command == "list":
+        m.listing()

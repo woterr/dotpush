@@ -1,6 +1,7 @@
 import os
 import keyring
 import requests
+import shutil
 from .git_env import _env
 from .git_check import _check_remote_repo
 from .config import _get_config
@@ -69,19 +70,51 @@ def _create_remote_repository(
         return False
 
 
-def _git_init() -> bool:
+def _git_init(force: bool) -> bool:
     """
     This helper creates the GitHub repository for DotPush backup directory.
 
     Args:
-        git_username (str): GitHub account username.
-
+        force (bool): True if the function should overwrite
+                    the existing initialization.
     Returns:
         bool: True if initialization was successfull. False otherwise.
     """
     config = _get_config()
-    if config.has_section("GitHub") and config.getboolean(
-        "GitHub", "enabled", fallback=False
+
+    if force:
+        try:
+            prompt = input(
+                "? This will delete your current configuration and local Git history. Are you sure? [y/N]:"
+            )
+            if prompt.lower() in ["y", "yes", ""]:
+                print("Removing existing configuration.")
+                backup_dir = config.get("Settings", "backup_directory", fallback=None)
+
+                if backup_dir:
+                    git_dir_path = os.path.join(os.path.expanduser(backup_dir), ".git")
+
+                    if os.path.exists(git_dir_path):
+                        print(f"-> Removing local Git repository at {git_dir_path}...")
+                        shutil.rmtree(git_dir_path)
+
+                keyring.delete_password("dotpush", "github_token")
+                print("-> Reset complete.")
+
+            else:
+                print("-> Reset cancelled.")
+                return
+
+        except keyring.errors.PasswordDeleteError:
+            pass
+        except (KeyboardInterrupt, EOFError):
+            print("\n-> Reset cancelled.")
+            return False
+
+    if (
+        config.has_section("GitHub")
+        and config.getboolean("GitHub", "enabled", fallback=False)
+        and not force
     ):
         print("GitHub integration is already enabled.")
         return
@@ -132,8 +165,3 @@ def _git_init() -> bool:
     else:
         print("    -> Found existing repository on GitHub.")
         return True
-
-    # get token
-    # get repository
-    # initialize repository
-    # store username and repo name in config.ini

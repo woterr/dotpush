@@ -1,4 +1,4 @@
-# Maintainer: Woter <im.woterr@gmail.com>
+# Maintainer: Woter im.woterr@gmail.com
 
 pkgname=dotpush
 pkgver=1.0.2
