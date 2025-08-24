@@ -59,6 +59,19 @@ dotpush init
 nano ~/.config/dotpush/config.ini
 ```
 
+Or you can add/remove paths using:
+```bash
+dotpush add <path/s>
+```
+```bash
+dotpush remove <path/s>
+```
+
+To list all paths being tracked:
+```bash
+dotpush list paths
+```
+
 3. Backup your DotFiles.
 
 ```bash
@@ -73,6 +86,20 @@ dotpush push
 
 > [!NOTE]
 > The automated `dotpush backup` and `dotpush push` can be enabled by running dotpush backup and push.
+
+5. Troubleshooting
+
+If you have to reinitialize DotPush for your backup directory:
+
+```bash
+dotpush init --force
+```
+
+And for GitHub:
+
+```bash
+dotpush init github --force
+```
 
 ## Contributing
 
