@@ -6,7 +6,8 @@ A lightweight tool that helps backup dotfiles and automatically push to a remote
 
 [![Run Tests](https://github.com/woterr/dotpush/actions/workflows/tests.yml/badge.svg)](https://github.com/woterr/dotpush/actions/workflows/tests.yml) [![Run Linter and Formatter](https://github.com/woterr/dotpush/actions/workflows/ci.yml/badge.svg)](https://github.com/woterr/dotpush/actions/workflows/ci.yml)
 
-![License](https://img.shields.io/github/license/woterr/dotpush)
+[![AUR version](https://img.shields.io/aur/version/dotpush)](https://aur.archlinux.org/packages/dotpush)  ![AUR License](https://img.shields.io/aur/license/dotpush) ![AUR Popularity](https://img.shields.io/aur/popularity/:packageName)
+
 
 ## Features
 - Backs up dotfiles and configuration directories.
@@ -15,6 +16,11 @@ A lightweight tool that helps backup dotfiles and automatically push to a remote
 - Preserve symlinks and file metadata.
 
 ## Installation
+
+**Install from AUR**
+```bash
+yay -S dotpush
+```
 
 **Manual Installation**:
 
