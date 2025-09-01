@@ -21,7 +21,6 @@ build() {
 package() {
     cd "$pkgname-$pkgver"
 
-    # python -m pip install --root="$pkgdir" --prefix=/usr dist/*.whl
     python -m installer --destdir="$pkgdir" dist/*.whl
 
     install -Dm644 "systemd/dotpush.service" "$pkgdir/usr/lib/systemd/user/dotpush.service"

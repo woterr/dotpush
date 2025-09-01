@@ -74,3 +74,7 @@ def main():
         m.remove(paths=args.paths)
     if args.command == "list":
         m.listing()
+
+
+# create option to edit how frequently the data is pushed/checked.
+# create wiki explaining eberything (maybe write locally and then change when u get internet? idk figure it out)
