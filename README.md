@@ -94,7 +94,15 @@ dotpush push
 > [!NOTE]
 > The automated `dotpush backup` and `dotpush push` can be enabled by running dotpush backup and push.
 
-5. Troubleshooting
+5. Automate DotPush
+```
+dotpush schedule --interval 30m
+```
+Allowed intervals:
+
+`10m   2h   1d   45s`
+
+7. Troubleshooting
 
 If you have to reinitialize DotPush for your backup directory:
 
