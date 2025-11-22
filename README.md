@@ -8,6 +8,12 @@ A lightweight tool that helps backup dotfiles and automatically push to a remote
 
 ![AUR Version](https://img.shields.io/aur/version/dotpush) ![AUR License](https://img.shields.io/aur/license/dotpush) ![AUR Maintainer](https://img.shields.io/aur/maintainer/dotpush)
 
+## Links
+
+Dotpush Wiki (Full documentation): https://github.com/woterr/dotpush/wiki
+DotPush on AUR: https://aur.archlinux.org/packages/dotpush
+
+# Quick start
 ## Features
 - Backs up dotfiles and configuration directories.
 - Secure GitHub push with token management.
