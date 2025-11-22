@@ -110,7 +110,7 @@ dotpush init github --force
 
 ## Contributing
 
-Feel free to open issues or PRs. If you're unsure, just fork and experiment.
+Feel free to open issues or PRs. If you're unsure, just fork and experiment. Read [Developer Environment Wiki](https://github.com/woterr/dotpush/wiki/Developer-Environment) to get started.
 
 ## License
 
