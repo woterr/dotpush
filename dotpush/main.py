@@ -8,6 +8,7 @@ from .utils.git_push import _push
 from .utils.add import _add_paths
 from .utils.remove import _remove_paths
 from .utils.listing import _list_paths
+from .utils.schedule import _schedule
 
 
 def init(service: str = None, force: bool = False):
@@ -37,12 +38,12 @@ def push():
     _push()
 
 
-def add(paths):
+def add(paths: list):
     """Add a path to the tracking list."""
     _add_paths(paths)
 
 
-def remove(paths):
+def remove(paths: list):
     """Remove a path from the tracking list."""
     _remove_paths(paths)
 
@@ -50,3 +51,8 @@ def remove(paths):
 def listing():
     """List all paths being tracked."""
     _list_paths()
+
+
+def schedule(time: str):
+    """Set timer for dotpush backup."""
+    _schedule()

@@ -1,7 +1,7 @@
 # Maintainer: Woter im.woterr@gmail.com
 
 pkgname=dotpush
-pkgver=1.0.3
+pkgver=1.1.0
 pkgrel=1
 pkgdesc="A tool to back up dotfiles and push to GitHub."
 arch=('any')
@@ -10,7 +10,7 @@ license=('MIT')
 depends=('python' 'python-keyring' 'python-requests' 'python-installer')
 makedepends=('python-build' 'python-wheel' 'python-setuptools')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/woterr/dotpush/releases/download/v$pkgver/dotpush-$pkgver.tar.gz")
-sha256sums=('a87a4fe9e2537777d85c040cd7f2bad233437213bbc5f80f8661569e2a709e13')
+sha256sums=('36d9ddf88314ac5a448e1ff380e63ed9e4e10b5ec4567c513a905cc9d0ffee92')
 install='dotpush.install'
 
 build() {

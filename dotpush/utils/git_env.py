@@ -1,6 +1,7 @@
 import getpass
 import keyring
 from .git_validity import _is_valid
+from keyring.errors import NoKeyringError
 
 
 def _env() -> tuple[bool, str | None]:
@@ -30,7 +31,17 @@ def _env() -> tuple[bool, str | None]:
             print("    -> Validating token with GitHub...")
 
             if _is_valid(token):
-                keyring.set_password("dotpush", "github_token", token)
+                try:
+                    keyring.set_password("dotpush", "github_token", token)
+                    return True
+                except NoKeyringError:
+                    print("\n[!] No secret storage backend available.")
+                    print(
+                        "    Install on Arch:\n"
+                        "    sudo pacman -S libsecret gnome-keyring\n"
+                    )
+                    print("    Or: pip install keyrings.alt  # insecure fallback\n")
+                    return False
                 print("\nToken saved securely Linux Secret Service.")
                 return (True, git_repository)
             else:

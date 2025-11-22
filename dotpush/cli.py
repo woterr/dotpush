@@ -59,6 +59,13 @@ def main():
         "paths", nargs="+", help="The path(s) to removed from tracking"
     )
     subparsers.add_parser("list", help="List all files being tracked")
+    parser_timer = subparsers.add_parser("schedule", help="Enable systemd timer.")
+    parser_timer.add_argument(
+        "--interval",
+        type=str,
+        default="1hr",
+        help="How often to run dotpush (e.g., 15m, 1h, 12h)",
+    )
 
     args = parser.parse_args()
 
@@ -74,6 +81,8 @@ def main():
         m.remove(paths=args.paths)
     if args.command == "list":
         m.listing()
+    if args.command == "schedule":
+        m.schedule(args.interval)
 
 
 # create option to edit how frequently the data is pushed/checked.
