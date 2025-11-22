@@ -102,7 +102,7 @@ Allowed intervals:
 
 `10m   2h   1d   45s`
 
-7. Troubleshooting
+6. Troubleshooting
 
 If you have to reinitialize DotPush for your backup directory:
 
