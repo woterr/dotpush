@@ -8,6 +8,8 @@ A lightweight tool that helps backup dotfiles and automatically push to a remote
 
 ![AUR Version](https://img.shields.io/aur/version/dotpush) ![AUR License](https://img.shields.io/aur/license/dotpush) ![AUR Maintainer](https://img.shields.io/aur/maintainer/dotpush)
 
+[![Packaging status](https://repology.org/badge/vertical-allrepos/dotpush.svg)](https://repology.org/project/dotpush/versions)
+
 ## Links
 
 - [Dotpush Wiki (Full documentation)](https://github.com/woterr/dotpush/wiki)
