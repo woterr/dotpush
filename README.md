@@ -10,7 +10,7 @@ A lightweight tool that helps backup dotfiles and automatically push to a remote
 
 ## Links
 
-Dotpush Wiki (Full documentation): https://github.com/woterr/dotpush/wiki
+Dotpush Wiki (Full documentation): https://github.com/woterr/dotpush/wiki \
 DotPush on AUR: https://aur.archlinux.org/packages/dotpush
 
 # Quick start
