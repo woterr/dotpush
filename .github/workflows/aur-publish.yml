@@ -2,8 +2,10 @@ name: Publish AUR Package
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - workflow-test
+    # tags:
+    #   - "v*"
 
 jobs:
   aur:
