@@ -58,16 +58,14 @@ jobs:
           entrypoint: /bin/bash
           args: |
             -c "
-              pacman -Sy --noconfirm pacman-contrib sudo
+              pacman -Sy --noconfirm pacman-contrib sudo git openssh
 
               useradd -m builder
               chown -R builder:builder /github/workspace
               cd /github/workspace/aur-repo
 
               sudo -u builder sed -i \"s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/\" PKGBUILD
-
               sudo -u builder sed -i \"s/^sha256sums=.*/sha256sums=('${{ steps.sha.outputs.SHA256 }}')/\" PKGBUILD
-
               sudo -u builder makepkg --printsrcinfo > .SRCINFO
             "
 
@@ -77,11 +75,10 @@ jobs:
           entrypoint: /bin/bash
           args: |
             -c "
-              pacman -Sy --noconfirm git sudo
+              pacman -Sy --noconfirm sudo git openssh
 
               useradd -m builder
               chown -R builder:builder /github/workspace
-
               cd /github/workspace/aur-repo
 
               sudo -u builder git config user.name \"${{ secrets.AUR_USERNAME }}\"
