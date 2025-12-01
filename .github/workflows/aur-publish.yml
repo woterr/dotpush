@@ -42,17 +42,19 @@ jobs:
 
       - name: Setup SSH for AUR
         run: |
-          mkdir -p ~/.ssh
+          pacman -S --noconfirm openssh
 
+          mkdir -p ~/.ssh
           echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
           printf "Host aur.archlinux.org\nHostName aur.archlinux.org\nUser aur\nIdentityFile ~/.ssh/id_ed25519\nStrictHostKeyChecking no\n" > ~/.ssh/config
-
           chmod 600 ~/.ssh/config
 
-      - name: Add AUR host key
-        run: ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+          /usr/bin/ssh -T aur@aur.archlinux.org || true
 
       - name: Clone AUR repository
         run: |
