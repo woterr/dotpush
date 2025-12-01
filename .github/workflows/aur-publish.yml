@@ -39,6 +39,7 @@ jobs:
         run: |
           sha=$(sha256sum source.tar.gz | cut -d ' ' -f1)
           echo "SHA256=$sha" >> $GITHUB_OUTPUT
+
       - name: Setup SSH for AUR
         run: |
           mkdir -p ~/.ssh
