@@ -7,7 +7,6 @@ on:
 
 jobs:
   publish:
-    name: Update AUR PKGBUILD
     runs-on: ubuntu-latest
 
     steps:
@@ -16,11 +15,9 @@ jobs:
 
       - name: Extract version from tag
         id: version
-        run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Download GitHub source tarball
-        id: download_source
         run: |
           curl -L -o source.tar.gz \
             https://github.com/woterr/dotpush/archive/refs/tags/v${{ steps.version.outputs.VERSION }}.tar.gz
@@ -31,59 +28,41 @@ jobs:
           SHA=$(sha256sum source.tar.gz | cut -d ' ' -f1)
           echo "SHA256=$SHA" >> $GITHUB_OUTPUT
 
-      - name: Setup SSH for AUR
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          cat << 'EOF' > ~/.ssh/config
-          Host aur.archlinux.org
-              HostName aur.archlinux.org
-              User aur
-              IdentityFile ~/.ssh/id_ed25519
-          EOF
-
-      - name: Add AUR to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -t ed25519 aur.archlinux.org >> ~/.ssh/known_hosts
-
-      - name: Clone AUR repo
-        run: |
-          git clone ssh://aur@aur.archlinux.org/${{ secrets.AUR_REPO }}.git aur-repo
-
-      - name: Update PKGBUILD + generate .SRCINFO
+      - name: Update PKGBUILD + Push to AUR (in Arch container)
         uses: docker://archlinux:latest
         with:
           entrypoint: /bin/bash
           args: |
             -c "
-              pacman -Sy --noconfirm pacman-contrib sudo git openssh
+              pacman -Sy --noconfirm git openssh pacman-contrib sudo
 
-              useradd -m builder
-              chown -R builder:builder /github/workspace
-              cd /github/workspace/aur-repo
+              # Setup SSH
+              mkdir -p /root/.ssh
+              echo '${{ secrets.AUR_SSH_PRIVATE_KEY }}' > /root/.ssh/id_ed25519
+              chmod 600 /root/.ssh/id_ed25519
 
-              sudo -u builder sed -i \"s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/\" PKGBUILD
-              sudo -u builder sed -i \"s/^sha256sums=.*/sha256sums=('${{ steps.sha.outputs.SHA256 }}')/\" PKGBUILD
-              sudo -u builder makepkg --printsrcinfo > .SRCINFO
-            "
+              echo 'Host aur.archlinux.org
+                HostName aur.archlinux.org
+                User aur
+                IdentityFile /root/.ssh/id_ed25519
+              ' > /root/.ssh/config
 
-      - name: Commit & Push to AUR
-        uses: docker://archlinux:latest
-        with:
-          entrypoint: /bin/bash
-          args: |
-            -c "
-              pacman -Sy --noconfirm sudo git openssh
+              ssh-keyscan aur.archlinux.org >> /root/.ssh/known_hosts
 
-              useradd -m builder
-              chown -R builder:builder /github/workspace
-              cd /github/workspace/aur-repo
+              # Clone AUR repo
+              git clone ssh://aur@aur.archlinux.org/${{ secrets.AUR_REPO }}.git /aur-repo
+              cd /aur-repo
 
-              sudo -u builder git config user.name \"${{ secrets.AUR_USERNAME }}\"
-              sudo -u builder git config user.email \"actions@github.com\"
-              sudo -u builder git add PKGBUILD .SRCINFO
-              sudo -u builder git commit -m \"Update to v${{ steps.version.outputs.VERSION }}\" || echo \"No changes\"
-              sudo -u builder git push
+              # Update PKGBUILD
+              sed -i 's/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/' PKGBUILD
+              sed -i 's/^sha256sums=.*/sha256sums=('"'"'${{ steps.sha.outputs.SHA256 }}'"'"')/' PKGBUILD
+
+              makepkg --printsrcinfo > .SRCINFO
+
+              # Commit + Push
+              git config user.name '${{ secrets.AUR_USERNAME }}'
+              git config user.email 'actions@github.com'
+              git add PKGBUILD .SRCINFO
+              git commit -m 'Update to v${{ steps.version.outputs.VERSION }}' || echo 'No changes'
+              git push
             "
