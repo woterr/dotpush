@@ -59,10 +59,19 @@ jobs:
           args: |
             -c "
               pacman -Sy --noconfirm pacman-contrib
+
+              # Create non-root user
+              useradd -m builder
+              chown -R builder:builder /github/workspace
+
               cd /github/workspace/aur-repo
-              sed -i 's/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/' PKGBUILD
-              sed -i 's/^sha256sums=.*/sha256sums=(''${{ steps.sha.outputs.SHA256 }}'')/' PKGBUILD
-              makepkg --printsrcinfo > .SRCINFO
+
+              # Switch to non-root user for makepkg
+              sudo -u builder bash -c '
+                sed -i \"s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/\" PKGBUILD
+                sed -i \"s/^sha256sums=.*/sha256sums=(\'${{ steps.sha.outputs.SHA256 }}\')/\" PKGBUILD
+                makepkg --printsrcinfo > .SRCINFO
+              '
             "
 
 
