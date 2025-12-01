@@ -46,17 +46,11 @@ jobs:
           echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-          cat << 'EOF' > ~/.ssh/config
-          Host aur.archlinux.org
-            HostName aur.archlinux.org
-            User aur
-            IdentityFile ~/.ssh/id_ed25519
-          EOF
+          echo "SG9zdCBhdXIuYXJjaGxpbnV4Lm9yZwogICAgSG9zdE5hbWUgYXVyLmFyY2hsaW51eC5vcmcKICAgIFVzZXIgYXVyCiAgICBJZGVudGl0eUZpbGUgfi8uc3NoL2lkX2VkMjU1MTk=" \
+            | base64 -d > ~/.ssh/config
 
           ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
-
-
 
 
       - name: Clone AUR repository
