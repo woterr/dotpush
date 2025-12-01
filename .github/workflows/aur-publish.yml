@@ -2,75 +2,78 @@ name: Publish AUR Package
 
 on:
   push:
-    branches:
-      - workflow-test
-    # tags:
-    #   - "v*"
+    tags:
+      - "v*"
 
 jobs:
-  publish:
+  aur:
     runs-on: ubuntu-latest
 
+    container:
+      image: archlinux:latest
+      options: --user=root
+
     steps:
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm git openssh pacman-contrib sudo base-devel
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Extract version from tag
         id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Download GitHub source tarball
         run: |
           curl -L -o source.tar.gz \
-            https://github.com/woterr/dotpush/archive/refs/tags/v${{ steps.version.outputs.VERSION }}.tar.gz
+            https://github.com/${GITHUB_REPOSITORY}/archive/refs/tags/v${{ steps.version.outputs.VERSION }}.tar.gz
 
-      - name: Compute sha256 checksum
+      - name: Compute SHA256
         id: sha
         run: |
-          SHA=$(sha256sum source.tar.gz | cut -d ' ' -f1)
-          echo "SHA256=$SHA" >> $GITHUB_OUTPUT
+          sha=$(sha256sum source.tar.gz | cut -d ' ' -f1)
+          echo "SHA256=$sha" >> $GITHUB_OUTPUT
 
-      - name: Update PKGBUILD + Push to AUR (in Arch container)
-        uses: docker://archlinux:latest
-        with:
-          entrypoint: /bin/bash
-          args: |
-            -c "
-              pacman -Sy --noconfirm git openssh pacman-contrib sudo
+      - name: Setup SSH for AUR
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
 
-              # Setup SSH for root (git push will run as root)
-              mkdir -p /root/.ssh
-              echo '${{ secrets.AUR_SSH_PRIVATE_KEY }}' > /root/.ssh/id_ed25519
-              chmod 600 /root/.ssh/id_ed25519
+          cat << 'EOF' > ~/.ssh/config
+          Host aur.archlinux.org
+            HostName aur.archlinux.org
+            User aur
+            IdentityFile ~/.ssh/id_ed25519
+          EOF
 
-              echo 'Host aur.archlinux.org
-                HostName aur.archlinux.org
-                User aur
-                IdentityFile /root/.ssh/id_ed25519
-              ' > /root/.ssh/config
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
-              ssh-keyscan aur.archlinux.org >> /root/.ssh/known_hosts
 
-              # Clone repo as root
-              git clone ssh://aur@aur.archlinux.org/${{ secrets.AUR_REPO }}.git /aur-repo
 
-              # Create builder user
-              useradd -m builder
-              chown -R builder:builder /aur-repo
 
-              # Update PKGBUILD and build .SRCINFO as builder (non-root)
-              sudo -u builder bash -c '
-                cd /aur-repo
-                sed -i \"s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/\" PKGBUILD
-                sed -i \"s/^sha256sums=.*/sha256sums=(\\\"${{ steps.sha.outputs.SHA256 }}\\\")/\" PKGBUILD
-                makepkg --printsrcinfo > .SRCINFO
-              '
+      - name: Clone AUR repository
+        run: |
+          git config --global --add safe.directory /aur-repo
+          git clone ssh://aur@aur.archlinux.org/${{ secrets.AUR_REPO }}.git /aur-repo
 
-              # Commit + push as root
-              cd /aur-repo
-              git config user.name '${{ secrets.AUR_USERNAME }}'
-              git config user.email 'actions@github.com'
-              git add PKGBUILD .SRCINFO
-              git commit -m 'Update to v${{ steps.version.outputs.VERSION }}' || echo 'No changes'
-              git push
-            "
+      - name: Update PKGBUILD
+        run: |
+          cd /aur-repo
+          sed -i "s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/" PKGBUILD
+          sed -i "s/^sha256sums=.*/sha256sums=('${{ steps.sha.outputs.SHA256 }}')/" PKGBUILD
+          makepkg --printsrcinfo > .SRCINFO
+
+      - name: Commit and Push
+        run: |
+          cd /aur-repo
+          git config user.name "${{ secrets.AUR_USERNAME }}"
+          git config user.email "actions@github.com"
+          git add PKGBUILD .SRCINFO
+          git commit -m "Update to v${{ steps.version.outputs.VERSION }}" || true
+          git push
