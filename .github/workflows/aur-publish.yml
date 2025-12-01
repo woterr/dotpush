@@ -1,0 +1,64 @@
+name: Publish AUR Package
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    name: Update AUR PKGBUILD
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Download GitHub source tarball
+        id: download_source
+        run: |
+          curl -L -o source.tar.gz \
+            https://github.com/woterr/dotpush/archive/refs/tags/v${{ steps.version.outputs.VERSION }}.tar.gz
+
+      - name: Compute sha256 checksum
+        id: sha
+        run: |
+          SHA=$(sha256sum source.tar.gz | cut -d ' ' -f1)
+          echo "SHA256=$SHA" >> $GITHUB_OUTPUT
+
+      - name: Setup SSH for AUR
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          cat << 'EOF' > ~/.ssh/config
+          Host aur.archlinux.org
+              HostName aur.archlinux.org
+              User aur
+              IdentityFile ~/.ssh/id_ed25519
+          EOF
+
+      - name: Clone AUR repo
+        run: |
+          git clone ssh://aur@aur.archlinux.org/${{ secrets.AUR_REPO }}.git aur-repo
+
+      - name: Update PKGBUILD
+        run: |
+          cd aur-repo
+          sed -i "s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/" PKGBUILD
+          sed -i "s/^sha256sums=.*/sha256sums=('${{ steps.sha.outputs.SHA256 }}')/" PKGBUILD
+          makepkg --printsrcinfo > .SRCINFO
+
+      - name: Commit & Push to AUR
+        run: |
+          cd aur-repo
+          git config user.name "${{ secrets.AUR_USERNAME }}"
+          git config user.email "actions@github.com"
+          git add PKGBUILD .SRCINFO
+          git commit -m "Update to v${{ steps.version.outputs.VERSION }}" || echo "No changes"
+          git push
