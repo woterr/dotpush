@@ -2,8 +2,10 @@ name: Publish AUR Package
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - workflow-test
+    # tags:
+    #   - "v*"
 
 jobs:
   publish:
@@ -36,7 +38,7 @@ jobs:
             -c "
               pacman -Sy --noconfirm git openssh pacman-contrib sudo
 
-              # Setup SSH
+              # Setup SSH for root (git push will run as root)
               mkdir -p /root/.ssh
               echo '${{ secrets.AUR_SSH_PRIVATE_KEY }}' > /root/.ssh/id_ed25519
               chmod 600 /root/.ssh/id_ed25519
@@ -49,17 +51,23 @@ jobs:
 
               ssh-keyscan aur.archlinux.org >> /root/.ssh/known_hosts
 
-              # Clone AUR repo
+              # Clone repo as root
               git clone ssh://aur@aur.archlinux.org/${{ secrets.AUR_REPO }}.git /aur-repo
+
+              # Create builder user
+              useradd -m builder
+              chown -R builder:builder /aur-repo
+
+              # Update PKGBUILD and build .SRCINFO as builder (non-root)
+              sudo -u builder bash -c '
+                cd /aur-repo
+                sed -i \"s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/\" PKGBUILD
+                sed -i \"s/^sha256sums=.*/sha256sums=(\'${{ steps.sha.outputs.SHA256 }}\')/\" PKGBUILD
+                makepkg --printsrcinfo > .SRCINFO
+              '
+
+              # Commit + push as root
               cd /aur-repo
-
-              # Update PKGBUILD
-              sed -i 's/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/' PKGBUILD
-              sed -i 's/^sha256sums=.*/sha256sums=('"'"'${{ steps.sha.outputs.SHA256 }}'"'"')/' PKGBUILD
-
-              makepkg --printsrcinfo > .SRCINFO
-
-              # Commit + Push
               git config user.name '${{ secrets.AUR_USERNAME }}'
               git config user.email 'actions@github.com'
               git add PKGBUILD .SRCINFO
