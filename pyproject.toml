@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dotpush"
-version = "1.1.1"
+version = "1.1.2"
 description = "A tool to backup dotfiles and push to GitHub."
 readme = "README.md"
 requires-python = ">=3.6"
