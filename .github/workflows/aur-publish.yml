@@ -62,7 +62,7 @@ jobs:
               sudo -u builder bash -c '
                 cd /aur-repo
                 sed -i \"s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/\" PKGBUILD
-                sed -i \"s/^sha256sums=.*/sha256sums=(\'${{ steps.sha.outputs.SHA256 }}\')/\" PKGBUILD
+                sed -i \"s/^sha256sums=.*/sha256sums=(\\\"${{ steps.sha.outputs.SHA256 }}\\\")/\" PKGBUILD
                 makepkg --printsrcinfo > .SRCINFO
               '
 
