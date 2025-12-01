@@ -121,7 +121,10 @@ def _git_init(force: bool) -> bool:
 
     print("    -> Enabling GitHub integration.")
 
-    git_repo = _env()[1]
+    ok, git_repo = _env()
+    if not ok or not git_repo:
+        return False
+
     token = keyring.get_password("dotpush", "github_token")
 
     if not token:

@@ -26,24 +26,24 @@ def _env() -> tuple[bool, str | None]:
 
             if not token:
                 print("\nNo token provided. Aborting.")
-                return (False, git_repository)
+                return (False, None)
 
             print("    -> Validating token with GitHub...")
 
             if _is_valid(token):
                 try:
                     keyring.set_password("dotpush", "github_token", token)
-                    return True
                 except NoKeyringError:
                     print("\n[!] No secret storage backend available.")
-                    print(
-                        "    Install on Arch:\n"
-                        "    sudo pacman -S libsecret gnome-keyring\n"
-                    )
-                    print("    Or: pip install keyrings.alt  # insecure fallback\n")
-                    return False
-                print("\nToken saved securely Linux Secret Service.")
+                    print("    Install on Arch:")
+                    print("        sudo pacman -S libsecret gnome-keyring\n")
+                    print("    Or:")
+                    print("        pip install keyrings.alt  # insecure fallback\n")
+                    return (False, None)
+
+                print("\nToken saved securely to Linux Secret Service.")
                 return (True, git_repository)
+
             else:
                 print("\nThe token provided is invalid or expired. Please try again.")
 
