@@ -39,22 +39,22 @@ jobs:
         run: |
           sha=$(sha256sum source.tar.gz | cut -d ' ' -f1)
           echo "SHA256=$sha" >> $GITHUB_OUTPUT
-
       - name: Setup SSH for AUR
         run: |
-          pacman -S --noconfirm openssh
-
           mkdir -p ~/.ssh
           echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-          printf "Host aur.archlinux.org\nHostName aur.archlinux.org\nUser aur\nIdentityFile ~/.ssh/id_ed25519\nStrictHostKeyChecking no\n" > ~/.ssh/config
-          chmod 600 ~/.ssh/config
+          cat > ~/.ssh/config << 'EOF'
+Host aur.archlinux.org
+    HostName aur.archlinux.org
+    User aur
+    IdentityFile ~/.ssh/id_ed25519
+EOF
 
           ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-          /usr/bin/ssh -T aur@aur.archlinux.org || true
 
       - name: Clone AUR repository
         run: |
