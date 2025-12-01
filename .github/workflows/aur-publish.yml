@@ -43,6 +43,11 @@ jobs:
               IdentityFile ~/.ssh/id_ed25519
           EOF
 
+      - name: Add AUR to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -t ed25519 aur.archlinux.org >> ~/.ssh/known_hosts
+
       - name: Clone AUR repo
         run: |
           git clone ssh://aur@aur.archlinux.org/${{ secrets.AUR_REPO }}.git aur-repo
