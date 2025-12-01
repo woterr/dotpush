@@ -52,12 +52,19 @@ jobs:
         run: |
           git clone ssh://aur@aur.archlinux.org/${{ secrets.AUR_REPO }}.git aur-repo
 
-      - name: Update PKGBUILD
-        run: |
-          cd aur-repo
-          sed -i "s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/" PKGBUILD
-          sed -i "s/^sha256sums=.*/sha256sums=('${{ steps.sha.outputs.SHA256 }}')/" PKGBUILD
-          makepkg --printsrcinfo > .SRCINFO
+      - name: Update PKGBUILD + generate .SRCINFO
+        uses: docker://archlinux:latest
+        with:
+          entrypoint: /bin/bash
+          args: |
+            -c "
+              pacman -Sy --noconfirm pacman-contrib
+              cd /github/workspace/aur-repo
+              sed -i 's/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/' PKGBUILD
+              sed -i 's/^sha256sums=.*/sha256sums=(''${{ steps.sha.outputs.SHA256 }}'')/' PKGBUILD
+              makepkg --printsrcinfo > .SRCINFO
+            "
+
 
       - name: Commit & Push to AUR
         run: |
