@@ -123,4 +123,3 @@ Feel free to open issues or PRs. If you're unsure, just fork and experiment. Rea
 ## License
 
 This project is licensed under the MIT License. Read [LICENSE](LICENSE) for full license text.
-a
