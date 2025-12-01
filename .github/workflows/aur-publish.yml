@@ -58,21 +58,19 @@ jobs:
           entrypoint: /bin/bash
           args: |
             -c "
-              pacman -Sy --noconfirm pacman-contrib
+              pacman -Sy --noconfirm pacman-contrib sudo
 
-              # Create non-root user
               useradd -m builder
               chown -R builder:builder /github/workspace
-
               cd /github/workspace/aur-repo
 
-              # Switch to non-root user for makepkg
-              sudo -u builder bash -c '
-                sed -i \"s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/\" PKGBUILD
-                sed -i \"s/^sha256sums=.*/sha256sums=(\'${{ steps.sha.outputs.SHA256 }}\')/\" PKGBUILD
-                makepkg --printsrcinfo > .SRCINFO
-              '
+              sudo -u builder sed -i \"s/^pkgver=.*/pkgver=${{ steps.version.outputs.VERSION }}/\" PKGBUILD
+
+              sudo -u builder sed -i \"s/^sha256sums=.*/sha256sums=('${{ steps.sha.outputs.SHA256 }}')/\" PKGBUILD
+
+              sudo -u builder makepkg --printsrcinfo > .SRCINFO
             "
+
 
 
       - name: Commit & Push to AUR
