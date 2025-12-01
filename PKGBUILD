@@ -1,7 +1,7 @@
 # Maintainer: Woter im.woterr@gmail.com
 
 pkgname=dotpush
-pkgver=1.1.7
+pkgver=1.1.8
 pkgrel=1
 pkgdesc="A tool to back up dotfiles and push to GitHub."
 arch=('any')
