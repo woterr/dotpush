@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="dotpush",
-    version="1.1.2",
+    version="1.1.3",
     packages=find_packages(include=["dotpush", "dotpush.*"]),
     include_package_data=True,
     install_requires=["keyring", "requests"],
